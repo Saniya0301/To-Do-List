@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>To Do List - JavaScript Project</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Add these styles inline or keep in style.css */
+
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f9a8d4, #7dd3fc); /* pinkish to blue */
+      position: relative;
+    }
+
+    #floatingEmojis {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .floating-emoji {
+      position: absolute;
+      font-size: 2.5rem;
+      user-select: none;
+      will-change: transform;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 400px;
+      margin: 50px auto;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating emojis container -->
+  <div id="floatingEmojis"></div>
+
+  <!-- Your To-Do List container -->
+  <div class="container">
+    <div class="input-container">
+      <h1>My To Do List</h1>
+      <input type="text" placeholder="Add a new to do..." id="inputBox" />
+      <input type="button" value="Add" id="addBtn" />
+    </div>
+
+    <ul class="todoList" id="todoList"></ul>
+  </div>
+
+  <!-- Your existing to-do list script -->
+  <script src="script.js"></script>
+
+  <!-- Floating emojis script -->
+  <script>
+    const emojis = ["🧘‍♀️", "💃", "📚"]; // yoga, dancing, studying emojis
+    const emojiCount = 25;
+    const floatingContainer = document.getElementById('floatingEmojis');
+
+    const floatingEmojis = [];
+
+    for (let i = 0; i < emojiCount; i++) {
+      const span = document.createElement('span');
+      span.classList.add('floating-emoji');
+      span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      floatingContainer.appendChild(span);
+
+      floatingEmojis.push({
+        el: span,
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+      });
+    }
+
+    function animate() {
+      floatingEmojis.forEach(obj => {
+        obj.x += obj.vx;
+        obj.y += obj.vy;
+
+        // Wrap around edges
+        if (obj.x > window.innerWidth) obj.x = 0;
+        if (obj.x < 0) obj.x = window.innerWidth;
+        if (obj.y > window.innerHeight) obj.y = 0;
+        if (obj.y < 0) obj.y = window.innerHeight;
+
+        obj.el.style.transform = `translate(${obj.x}px, ${obj.y}px)`;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      floatingEmojis.forEach(obj => {
+        obj.x = Math.min(obj.x, window.innerWidth);
+        obj.y = Math.min(obj.y, window.innerHeight);
+      });
+    });
+  </script>
+</body>
+</html>
